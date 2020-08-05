@@ -1,9 +1,14 @@
 {
     "cSpell.words": [
+        "CKEDITOR",
         "Sidenav",
+        "basicstyles",
         "conn",
         "crossorigin",
         "exphbs",
-        "mongodb"
+        "mongodb",
+        "plugins",
+        "resave",
+        "wysiwygarea"
     ]
 }

@@ -2,6 +2,8 @@
     "cSpell.words": [
         "Sidenav",
         "conn",
-        "crossorigin"
+        "crossorigin",
+        "exphbs",
+        "mongodb"
     ]
 }

@@ -3,8 +3,9 @@ p {
 }
 
 .login-container {
-  width: 400px;
-  margin-top: 50px;
+  display: grid;
+  place-items: center;
+  height: 100vh;
   text-align: center;
 }
 

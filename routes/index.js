@@ -16,7 +16,7 @@ router.get('/', ensureGuest, (req, res) => {
 // @route   GET /dashboard
 router.get('/dashboard', ensureAuth, async (req, res) => {
   try {
-    const projects = await Project.find({}).lean()
+    const projects = await Project.find().populate('user').lean()
 
     res.render('dashboard', {
       name: req.user.firstName,

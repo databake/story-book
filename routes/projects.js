@@ -1,52 +1,36 @@
 const express = require('express')
 const router = express.Router()
+const Project = require('../models/Project')
 const { ensureAuth } = require('../middleware/auth')
+
+// @desc    Show add page
+// @route   GET /projects/add
+router.get('/add', ensureAuth, (req, res) => {
+  res.render('projects/add')
+})
+
+// @desc    Process add form
+// @route   POST /projects
+router.post('/', ensureAuth, async (req, res) => {
+  try {
+    req.body.user = req.user.id
+    await Project.create(req.body)
+    res.redirect('/dashboard')
+  } catch (err) {
+    console.error(err)
+    res.render('error/500')
+  }
+})
 
 // @desc    Show all projects
 // @route   GET /projects
 router.get('/', ensureAuth, async (req, res) => {
   try {
-    //   const stories = await Story.find({ status: 'public' })
-    //     .populate('user')
-    //     .sort({ createdAt: 'desc' })
-    //     .lean()
-    const projects = [
-      {
-        _id: '1',
-        name: 'Project 1',
-        abstract:
-          'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officiis aut quisquam totam deserunt cum numquam nisi soluta obcaecati! Provident, itaque dolor alias quam minus corporis blanditiis earum temporibus qui quibusdam.',
-        stories: 12,
-      },
-      {
-        _id: '2',
-        name: 'Project 2',
-        abstract:
-          'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Soluta veniam ullam id harum perferendis facere sapiente sed, doloribus accusamus tempore nostrum corporis sint earum ab nemo, voluptatibus corrupti. Quo, ipsa!',
-        stories: 19,
-      },
-      {
-        _id: '3',
-        name: 'Project 3',
-        abstract:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur repellat, in esse quibusdam perferendis eligendi id accusantium temporibus corporis voluptatem, nobis vero maiores commodi saepe! Cum impedit omnis dicta fuga?',
-        stories: 3,
-      },
-      {
-        _id: '4',
-        name: 'Project 4',
-        abstract:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, doloribus. Error, accusantium obcaecati accusamus sapiente numquam aliquam dicta neque optio similique, vel eaque eius! Laudantium dolores quos deserunt distinctio quasi.',
-        stories: 31,
-      },
-      {
-        _id: '5',
-        name: 'Project 5',
-        abstract:
-          'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam accusantium fugiat facere repellat labore ea magnam deserunt voluptates dolore quam ipsam qui ducimus, non quo iusto sit, ullam earum voluptatum.',
-        stories: 11,
-      },
-    ]
+    const projects = await Project.find()
+      .populate('project')
+      .sort({ createdAt: 'desc' })
+      .lean()
+
     res.render('projects/index', {
       projects,
     })
@@ -55,4 +39,121 @@ router.get('/', ensureAuth, async (req, res) => {
     res.render('error/500')
   }
 })
+
+// @desc    Show single project
+// @route   GET /project/:id
+router.get('/:id', ensureAuth, async (req, res) => {
+  try {
+    let project = await Project.findById(req.params.id).populate('user').lean()
+
+    if (!project) {
+      return res.render('error/404')
+    }
+
+    res.render('projects/show', {
+      project: project,
+    })
+  } catch (err) {
+    console.error(err)
+    res.render('error/404')
+  }
+})
+
+// @desc    Show edit page
+// @route   GET /projects/edit/:id
+router.get('/edit/:id', ensureAuth, async (req, res) => {
+  try {
+    const project = await Project.findOne({
+      _id: req.params.id,
+    }).lean()
+
+    if (!project) {
+      return res.render('error/404')
+    }
+
+    if (project.user != req.user.id) {
+      res.redirect('/projects')
+    } else {
+      res.render('projects/edit', {
+        project: project,
+      })
+    }
+  } catch (err) {
+    console.error(err)
+    return res.render('error/500')
+  }
+})
+
+// @desc    Update project
+// @route   PUT /projects/:id
+router.put('/:id', ensureAuth, async (req, res) => {
+  try {
+    let project = await Project.findById(req.params.id).lean()
+
+    if (!project) {
+      return res.render('error/404')
+    }
+
+    if (project.user != req.user.id) {
+      res.redirect('/projects/edit')
+    } else {
+      project = await Project.findOneAndUpdate(
+        { _id: req.params.id },
+        req.body,
+        {
+          new: true,
+          runValidators: true,
+        }
+      )
+
+      res.redirect('/dashboard')
+    }
+  } catch (err) {
+    console.error(err)
+    return res.render('error/500')
+  }
+})
+
+// @desc    Delete project
+// @route   DELETE /projects/:id
+router.delete('/:id', ensureAuth, async (req, res) => {
+  try {
+    let project = await Project.findById(req.params.id).lean()
+
+    if (!project) {
+      return res.render('error/404')
+    }
+
+    if (project.user != req.user.id) {
+      res.redirect('/projects')
+    } else {
+      await Project.remove({ _id: req.params.id })
+      res.redirect('/dashboard')
+    }
+  } catch (err) {
+    console.error(err)
+    return res.render('error/500')
+  }
+})
+
+// @desc    User projects
+// @route   GET /projects/user/:userId
+router.get('/user/:userId', ensureAuth, async (req, res) => {
+  try {
+    const projects = await Project.find({
+      user: req.params.userId,
+      status: 'public',
+    })
+      .populate('user')
+      .lean()
+
+    res.render('projects/index', {
+      projects,
+    })
+  } catch (err) {
+    console.error(err)
+    res.render('error/500')
+  }
+})
+
 module.exports = router

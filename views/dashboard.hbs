@@ -5,16 +5,13 @@
 <ul class="collection with-header">
   <li class="collection-header"><h5>Here are your projects</h5></li>
   {{#each projects}}
-  <a href="/projects/{{ _id }}" class="collection-item avatar">
-    <img src="{{ user.image }}" class="circle" alt="" />
-    <span class="title">
-      {{ name }}
-    </span>
-    <p class="grey-text text-darken-2">
-      {{ stripTags (truncate abstract 200)  }} <br />
-      <span class="grey-text">{{formatDate createdAt 'MMMM Do YYYY'}}</span>
-    </p>
-   <i class="material-icons secondary-content">chevron_right</i></a
+  <a href="/projects/{{ _id }}/stories" class="collection-item avatar">
+    <img src="{{ user.image }}" class="circle" alt="{{user.displayName}}" />
+    <div class="title">{{ name }}</div>
+    <div class="grey-text text-darken-2">{{ stripTags (truncate abstract 200)  }} </div>
+    <div class="grey-text">{{formatDate createdAt 'MMMM Do YYYY'}}</div>
+    <i class="material-icons secondary-content">chevron_right</i>
+   </a
     
   </a>
   {{/each}}

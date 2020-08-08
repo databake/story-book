@@ -22,6 +22,12 @@ const ProjectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  stories: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Story',
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

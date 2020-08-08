@@ -1,13 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const Project = require('../models/Project')
 const Story = require('../models/Story')
 const { ensureAuth } = require('../middleware/auth')
 
 // @desc    Show add page
 // @route   GET /projects/add
 router.get('/add', ensureAuth, (req, res) => {
-  res.render('projects/add')
+  res.render('stories/add')
 })
 
 // @desc    Process add form
@@ -154,24 +153,6 @@ router.get('/user/:userId', ensureAuth, async (req, res) => {
   } catch (err) {
     console.error(err)
     res.render('error/500')
-  }
-})
-
-// @desc    Project Stories
-// @route   GET /projects/:id/stories
-
-router.get('/:id/stories', ensureAuth, async (req, res) => {
-  try {
-    const stories = await Story.find({ project: req.params.id })
-      .populate('project')
-      .lean()
-
-    res.render('stories/index', {
-      stories,
-    })
-  } catch (err) {
-    console.error(err)
-    res.render('error/404')
   }
 })
 

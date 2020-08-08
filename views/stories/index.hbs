@@ -1,0 +1,23 @@
+<h6>Stories</h6>
+
+
+{{#if stories}}
+<ul class="collection with-header">
+  <li class="collection-header"><h5>Here are your project stories</h5></li>
+  {{#each stories}}
+  <a href="/stories/{{ _id }}" class="collection-item avatar">
+    <i class="material-icons circle teal lighten-5">lightbulb_outline</i>
+    <div class="title">Feature: {{ name }}</div>
+    <div class="grey-text text-darken-2">In order: {{ inOrder  }} </div>
+    <div class="grey-text text-darken-2">As a: {{ asA  }} </div>
+    <div class="grey-text text-darken-2">I want: {{ iWant  }} </div>
+    <div class="grey-text">{{formatDate createdAt 'MMMM Do YYYY'}}</div>
+    <i class="material-icons secondary-content">chevron_right</i>
+   </a
+    
+  
+  {{/each}}
+</ul>
+{{else}}
+<p>You have not created any stories for this project</p>
+{{/if}}

@@ -21,6 +21,12 @@ const StorySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
   },
+  gherkins: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Gherkin',
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

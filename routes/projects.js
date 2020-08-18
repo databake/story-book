@@ -1,8 +1,14 @@
 const express = require('express')
-const router = express.Router()
+const router = express.Router({ mergeParams: true })
 const Project = require('../models/Project')
 const Story = require('../models/Story')
 const { ensureAuth } = require('../middleware/auth')
+
+// Include other resources
+const storiesRouter = require('./stories')
+
+// Re-route into other resource routers
+router.use('/:projectId/stories', storiesRouter)
 
 // @desc    Show add page
 // @route   GET /projects/add
@@ -160,19 +166,19 @@ router.get('/user/:userId', ensureAuth, async (req, res) => {
 // @desc    Project Stories
 // @route   GET /projects/:id/stories
 
-router.get('/:id/stories', ensureAuth, async (req, res) => {
-  try {
-    const stories = await Story.find({ project: req.params.id })
-      .populate('project')
-      .lean()
+// router.get('/:id/stories', ensureAuth, async (req, res) => {
+//   try {
+//     const stories = await Story.find({ project: req.params.id })
+//       .populate('project')
+//       .lean()
 
-    res.render('stories/index', {
-      stories,
-    })
-  } catch (err) {
-    console.error(err)
-    res.render('error/404')
-  }
-})
+//     res.render('stories/index', {
+//       stories,
+//     })
+//   } catch (err) {
+//     console.error(err)
+//     res.render('error/404')
+//   }
+// })
 
 module.exports = router

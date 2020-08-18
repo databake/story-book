@@ -1,21 +1,32 @@
-<h6>Dashboard</h6>
-<h5 class="grey-text" >Welcome {{ name }}</h5>
+<!--h6>Dashboard</h6>
+<h5 class="grey-text" >Welcome {{ name }}</h5-->
 
 {{#if projects}}
 <ul class="collection with-header">
-  <li class="collection-header"><h5>Here are your projects</h5></li>
+  <li class="collection-header"><h5>Your projects</h5></li>
   {{#each projects}}
   <a href="/projects/{{ _id }}/stories" class="collection-item avatar">
     <img src="{{ user.image }}" class="circle" alt="{{user.displayName}}" />
     <div class="title">{{ name }}</div>
-    <div class="grey-text text-darken-2">{{ stripTags (truncate abstract 200)  }} </div>
+    <div class="grey-text text-darken-2">{{ stripTags (truncate abstract 80)  }} </div>
     <div class="grey-text">{{formatDate createdAt 'MMMM Do YYYY'}}</div>
-    <i class="material-icons secondary-content">chevron_right</i>
+    <!--i class="material-icons secondary-content">chevron_right</i-->
    </a
     
   </a>
   {{/each}}
+  <div class="collection-item">
+    <a
+      class="btn-floating btn-small add-btn sidenav-trigger " data-target="add-new-project-form"
+    >
+      <i class="material-icons">add</i>
+    </a>
+    <span class="title">Add project</span>
+  </div>
+    
+  
 </ul>
+
 {{else}}
 <p>You have not created any projects</p>
 {{/if}}
